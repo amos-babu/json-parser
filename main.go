@@ -1,39 +1,57 @@
 package main
 
-type Type string
+import "fmt"
 
 const (
 	//Token/character we don't recognize
-	Illegal Type = "ILLEGAL"
+	Illegal = "ILLEGAL"
 
 	//End of file
-	EOF Type = "EOF"
+	EOF = "EOF"
 
 	//Identifiers + literals
-	// String Type = "STRING"
-	// Number Type = "NUMBER"
+	// String = "STRING"
+	// Number = "NUMBER"
 
 	//Valuesee
-	// True  Type = "TRUE"
-	// False Type = "FALSE"
-	// Null  Type = "NULL"
+	// True  = "TRUE"
+	// False = "FALSE"
+	// Null  = "NULL"
 
 	//Six structural tokens
-	LeftBrace  Type = "{"
-	RightBrace Type = "}"
-	// LeftBracket  Type = "["
-	// RightBracket Type = "]"
-	// Comma        Type = ","
-	// Colon        Type = ":"
+	LeftBrace  = "{"
+	RightBrace = "}"
+	// LeftBracket  = "["
+	// RightBracket = "]"
+	// Comma        = ","
+	// Colon        = ":"
 )
 
 type Token struct {
-	Type    Type
-	Literal string
-	Line    int
-	Start   int
-	End     int
+	tokenType string
+	value     string
 }
 
+func lexer(s string) []Token {
+	fmt.Println(s)
+	currentPosition := 0
+	tokens := []Token{}
+	for currentPosition < len(s) {
+		charater := string(s[currentPosition])
+
+		if charater == "{" {
+			tokens = append(tokens, Token{tokenType: LeftBrace, value: charater})
+			currentPosition++
+		} else if charater == "}" {
+			tokens = append(tokens, Token{tokenType: RightBrace, value: charater})
+			currentPosition++
+		} else if charater == "EOF" {
+			break
+		} else {
+			fmt.Println("Illegal character unable to parse")
+		}
+	}
+	return tokens
+}
 func main() {
 }
