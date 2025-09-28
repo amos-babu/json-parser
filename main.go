@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"unicode"
+)
 
 const (
 	//Token/character we don't recognize
@@ -32,26 +35,43 @@ type Token struct {
 	value     string
 }
 
-func lexer(s string) []Token {
-	fmt.Println(s)
-	currentPosition := 0
-	tokens := []Token{}
-	for currentPosition < len(s) {
-		charater := string(s[currentPosition])
+type Lexer struct {
+	input    []rune
+	position int
+}
 
-		if charater == "{" {
-			tokens = append(tokens, Token{tokenType: LeftBrace, value: charater})
-			currentPosition++
-		} else if charater == "}" {
-			tokens = append(tokens, Token{tokenType: RightBrace, value: charater})
-			currentPosition++
-		} else if charater == "EOF" {
-			break
-		} else {
-			fmt.Println("Illegal character unable to parse")
-		}
+// func NewLexer(s string) *Lexer {
+// 	return &Lexer{input: s}
+// }
+
+func (l *Lexer) lexer() []Token {
+	tokens := []Token{}
+
+	//skip whitespace
+	for l.position < len(l.input) && unicode.IsSpace(l.input[l.position]) {
+		l.position++
+	}
+
+	//End of line
+	if l.position >= len(l.input) {
+		return []Token{}
+	}
+
+	character := l.input[l.position]
+	l.position++
+	switch character {
+	case '{':
+		tokens = append(tokens, Token{tokenType: LeftBrace, value: "{"})
+	case '}':
+		tokens = append(tokens, Token{tokenType: RightBrace, value: "}"})
+	default:
+		tokens = append(tokens, Token{tokenType: Illegal, value: string(character)})
 	}
 	return tokens
 }
+
 func main() {
+	lexer := &Lexer{input: []rune("{}")}
+
+	fmt.Println(lexer)
 }
